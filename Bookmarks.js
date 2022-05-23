@@ -119,8 +119,8 @@ function doImport() {
 					
 					var title = m[3].trim();
 					
-					if (!title || m[2].toUpperCase().indexOf('PLACE:') == 0) {
-						Z.debug('Skipping item with no title or special "place:" item');
+					if (m[2].toUpperCase().indexOf('PLACE:') == 0) {
+						Z.debug('Skipping item with special "place:" item');
 						openItem = false;
 						break;
 					}
@@ -145,7 +145,7 @@ function doImport() {
 								openItem.tags = openItem.tags.concat(detailMatch[3].split(/[\s\r\n]*,[\s\r\n]*/));
 							break;
 							case 'ADD_DATE':
-								openItem.accessDate = convertDate(detailMatch[3])
+								openItem.dateAdded = convertDate(detailMatch[3])
 							break;
 						}
 					}
@@ -239,8 +239,8 @@ function doExport() {
 	Zotero.write(header);
 	while (item = Zotero.nextItem()) {
 		// TODO Be more verbose, making an informative title and including more metadata
-		//tags = item.tags.forEach(function (tag) {return tag.tag}).join(",");
-		if (item.url) Zotero.write('    <DT><A HREF="'+item.url+'">'+item.title+'</A>\n');
+		tags = item.tags.forEach(function (tag) {return tag.tag}).join(",");
+		if (item.url) Zotero.write('    <DT><A HREF="'+item.url+'" ADD_DATE="'+item.dateAdded+'" TAGS="'+tags+'">'+item.title+'</A>\n');
 		else Zotero.debug("Skipping item without URL: "+item.title);
 	}
 	Zotero.write(footer);
@@ -270,7 +270,7 @@ var testCases = [
 				"itemID": 0,
 				"url": "https://pond.imperialviolet.org",
 				"abstractNote": "For secure, synchronous communication we have OTR and, when run over Tor, this is pretty good. But while we have secure asynchronous messaging in the form of PGP email, it's not forward secure and it gratuitously leaks traffic information. While a desire for forward secure PGP is hardly new, it still hasn't materialised in a widely usable manner.\n\nAdditionally, email is used predominately for insecure communications (mailing lists, etc) and is useful because it allows previously unconnected people to communicate as long as a (public) email address is known to one party. But the flip side to this is that volume and spam are driving people to use centralised email services. These provide such huge benefits to the majority of email communication, so it's unlikely that this trend is going to reverse. But, even with PGP, these services are trusted with hugely valuable traffic information if any party uses them.\n\nSo Pond is not email. Pond is forward secure, asynchronous messaging for the discerning. Pond messages are asynchronous, but are not a record; they expire automatically a week after they are received. Pond seeks to prevent leaking traffic information against everyone except a global passive attacker.",
-				"accessDate": "2014-03-31 08:06:22"
+				"dateAdded": "2014-03-31 08:06:22"
 			}
 		]
 	}
